@@ -16,3 +16,10 @@ function get_error($model){
     }
     return $all_error .='</ul>';
 }
+function show_words($word){
+    if (strlen($word)>30) {
+        return mb_substr($word,0,30,'utf-8').'...';
+    }else{
+        return $word;
+    }
+}

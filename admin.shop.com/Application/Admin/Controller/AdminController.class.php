@@ -69,6 +69,7 @@ class AdminController extends Controller
             }
             $this->success('添加成功', U('index'));
         }else{
+            $this->_role_ztree();
             $this->display();
         }
     }
@@ -89,21 +90,32 @@ class AdminController extends Controller
         $this->display();
     }
     public function edit($id) {
+        $admin_model = D('Admin');
         if (IS_POST) {
-
+            if ($admin_model->create() === false) {
+                $this->error(get_error($admin_model));
+            }
+            if ($admin_model->saveAdmin() === false) {
+                $this->error(get_error($admin_model));
+            }
             $this->success('修改成功', U('index'));
         } else {
-            $row = D('Admin')->find($id);
+            $this->_role_ztree();
+            $row = $admin_model->getAdmin($id);
             $this->assign('row', $row);
             $this->display('add');
         }
     }
     public function remove($id) {
         $admin_model = D('Admin');
-        if ($admin_model->delete($id) === false) {
+        if ($admin_model->deleteAdmin($id) === false) {
             $this->error(get_error($admin_model));
         }
         $this->success('删除成功', U('index'));
+    }
+    private function _role_ztree(){
+        $roles = D('Role')->getRoleList();
+        $this->assign('roles',$roles);
     }
 
 }

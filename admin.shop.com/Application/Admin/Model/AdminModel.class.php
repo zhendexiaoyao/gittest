@@ -45,8 +45,55 @@ class AdminModel extends Model
         return $row;
     }
     public function addAdmin(){
+        $this->startTrans();
         $this->data['password'] = md5(md5($this->data['password']).md5($this->data['salt']));
-        $this->add();
+        $admin_id = $this->add();
+        if ($admin_id === false) {
+            $this->error = '管理员插入失败';
+            $this->rollback();
+            return false;
+        }
+        $role_id = I('post.role_id');
+        if (empty($role_id)) {
+            $this->commit();
+            return true;
+        }
+        $data = [];
+        foreach($role_id as $val){
+            $data[] = ['admin_id'=>$admin_id,'role_id'=>$val];
+        }
+        if (M('AdminRole')->addAll($data)===false) {
+            $this->error = '管理员、角色关联失败';
+            $this->rollback();
+            return false;
+        }
+        $this->commit();
+        return true;
+    }
+    public function saveAdmin(){
+        $this->startTrans();
+        $admin_id = $this->data['id'];
+        if (M('AdminRole')->where(['admin_id'=>$admin_id])->delete()===false) {
+            $this->error = '删除管理员角色关联失败';
+            $this->rollback();
+            return false;
+        }
+        $role_id = I('post.role_id');
+        if (empty($role_id)) {
+            $this->commit();
+            return true;
+        }
+        $data = [];
+        foreach($role_id as $val){
+            $data[] = ['admin_id'=>$admin_id,'role_id'=>$val];
+        }
+        if (M('AdminRole')->addAll($data)===false) {
+            $this->error = '管理员、角色关联失败';
+            $this->rollback();
+            return false;
+        }
+        $this->commit();
+        return true;
     }
     public function getPageList(array $cond = []){
         $total = $this->where($cond)->count();
@@ -83,5 +130,25 @@ class AdminModel extends Model
             cookie('TOKEN', $data, 604800);
             $this->save($data);
         }
+    }
+    public function getAdmin($id){
+        $row = $this->where(['id'=>$id])->find();
+        $row['role_ids'] =json_encode(M('AdminRole')->where(['admin_id'=>$id])->getField('role_id',true)) ;
+        return $row;
+    }
+    public function deleteAdmin($id){
+        $this->startTrans();
+        if ($this->delete($id)===false) {
+            $this->rollback();
+            $this->error = '删除管理员失败！';
+            return false;
+        }
+        if (M('AdminRole')->where(['admin_id'=>$id])->delete()===false) {
+            $this->rollback();
+            $this->error = '删除管理员角色关联失败！';
+            return false;
+        }
+        $this->commit();
+        return true;
     }
 }

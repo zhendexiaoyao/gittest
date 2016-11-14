@@ -8,7 +8,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <link href="/Public/css/general.css" rel="stylesheet" type="text/css"/>
     <link href="/Public/css/main.css" rel="stylesheet" type="text/css"/>
-    <link href="/Public/ext/uploadify/common.css" rel="stylesheet" type="text/css"/>
+    <link href="/Public/ext/ztree/zTreeStyle.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <h1>
@@ -49,6 +49,15 @@
                 </td>
             </tr>
             <tr>
+                <td class="label">角色</td>
+                <td>
+                    <div id="role-ids">
+
+                    </div>
+                    <ul id="roles" class="ztree"></ul>
+                </td>
+            </tr>
+            <tr>
                 <td colspan="2" align="center"><br/>
                     <input type="hidden" name="id" value="<?php echo ($row["id"]); ?>"/>
                     <input type="submit" class="button" value=" 确定 "/>
@@ -63,10 +72,45 @@
     共执行 1 个查询，用时 0.018952 秒，Gzip 已禁用，内存占用 2.197 MB<br/>
     版权所有 &copy; 2005-2012 上海商派网络科技有限公司，并保留所有权利。
 </div>
-<script type="text/javascript" src="/Public/Js/jquery.min.js"></script>
-<script type="text/javascript" src="/Public/ext/layer/layer.js"></script>
+<script type="text/javascript" src="/Public/Js/jquery-1.11.2.min.js"></script>
+<script type="text/javascript" src="/Public/ext/ztree/jquery.ztree.core.min.js"></script>
+<script type="text/javascript" src="/Public/ext/ztree/jquery.ztree.excheck.min.js"></script>
 <script type="text/javascript">
-    $(function(){
+    var setting = {
+        check:{
+            enable:true,
+        },
+        data: {
+            simpleData: {
+                enable: true,
+            }
+        },
+        callback:{
+            onCheck:function(event,ele_id,node){
+                var nodes = ztree_obj.getCheckedNodes(true);
+                var box = $('#role-ids');
+                box.empty();
+                $(nodes).each(function(i,v){
+                    var html = '<input type="hidden" name="role_id[]" value="'+v.id+'"/>';
+                    $(html).appendTo(box);
+                });
+            },
+        },
+    };
+
+    var zNodes = <?php echo ($roles); ?>;
+    var ztree_obj;
+
+    $(document).ready(function() {
+        ztree_obj = $.fn.zTree.init($("#roles"), setting, zNodes);
+        ztree_obj.expandAll(true);
+
+        //编辑页面回显关联的权限
+        <?php if(isset($row)): ?>var role_ids = <?php echo ($row["role_ids"]); ?>;
+    $(role_ids).each(function(i,v){
+        var node = ztree_obj.getNodeByParam('id',v);
+        ztree_obj.checkNode(node,true,false,true)
+    });<?php endif; ?>
     });
 </script>
 </body>

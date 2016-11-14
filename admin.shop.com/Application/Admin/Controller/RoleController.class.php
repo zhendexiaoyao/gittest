@@ -15,18 +15,60 @@ class RoleController extends Controller
 {
     private $_model;
     protected function _initialize(){
-        $this->_model = D('Permission');
+        $this->_model = D('Role');
     }
     public function index(){
-
+        $cond    = [];
+        $keyword ='';
+        if(IS_GET){
+            $keyword = trim(I('get.keyword'));
+        }
+        if($keyword){
+            $cond['name'] = ['like','%'.$keyword.'%'];
+        }
+        $data = $this->_model->getPageList($cond);
+        $this->assign('pageBar',$data['pageBar']);
+        $this->assign('rows',$data['rows']);
+        $this->display();
     }
     public function add(){
-
+        if (IS_POST) {
+            if ($this->_model->create()===false) {
+                $this->error(get_error($this->_model));
+            }
+            if ($this->_model->addRole()===false) {
+                $this->error(get_error($this->_model));
+            }
+            $this->success('添加成功',U('index'));
+        }else{
+            $this->_get_permission();
+            $this->display();
+        }
     }
-    public function edit(){
-
+    public function edit($id){
+        if (IS_POST) {
+            if ($this->_model->create()===false) {
+                $this->error(get_error($this->_model));
+            }
+            if ($this->_model->saveRole()===false) {
+                $this->error(get_error($this->_model));
+            }
+            $this->success('修改成功',U('index'));
+        }else{
+            $row = $this->_model->getRole($id);
+            $this->assign('row',$row);
+            $this->_get_permission();
+            $this->display('add');
+        }
     }
-    public function remove(){
-
+    public function remove($id){
+        if ($this->_model->deleteRole($id)===false) {
+            $this->error(get_error($this->_model));
+        }
+        $this->success('删除成功',U('index'));
+    }
+    private function _get_permission(){
+        $permission = M('Permission')->order('lft')->select();
+        $this->assign('permission',json_encode($permission));
     }
 }
