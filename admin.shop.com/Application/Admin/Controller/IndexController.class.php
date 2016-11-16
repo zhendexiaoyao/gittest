@@ -9,7 +9,7 @@ class IndexController extends Controller {
         $this->display();
     }
     public function menu(){
-        $menus = D('Menu')->getVisableMenu();
+        $menus = D('Menu')->getVisableMenu();//获得管理员名下可以看到的菜单
         $this->assign('menus',$menus);
         $this->display();
     }

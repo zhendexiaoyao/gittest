@@ -11,6 +11,7 @@ namespace Admin\Logic;
 
 class MysqlOrm implements DbMysql
 {
+    //实现数据库接口类
     private function _getSql(array $args){
         $sql  = array_shift($args); //获得数组的sql结构
         $sqls = preg_split('/\?[FTN]/', $sql); //将sql结构转换成数组

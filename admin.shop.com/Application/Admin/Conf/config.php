@@ -1,8 +1,8 @@
 <?php
 return array(
 	//'配置项'=>'配置值'
-    'BASE_URL' =>'http://admin.shop.com/',
-    'TMPL_PARSE_STRING'     =>  array(
+    'BASE_URL' =>'http://admin.shop.com/',//设置网站URL
+    'TMPL_PARSE_STRING'     =>  array(//布局模板替换标识
         '__CSS__'   => '/Public/css',
         '__JS__'   => '/Public/Js',
         '__IMG__'   => '/Public/Images',
@@ -20,13 +20,13 @@ return array(
     'DB_PREFIX' => 'shop_', // 数据库表前缀
     'DB_CHARSET'=> 'utf8', // 字符集
     'DB_DEBUG'  =>  TRUE, // 数据库调试模式 开启后可以记录SQL日志 3.2.3新增
-    'PAGE_MODE' =>[
+    'PAGE_MODE' =>[//分页配置
         'SIZE'=>2,
         'THEME'=>'%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%',
     ],
     'RBAC'=>[
-        'IGNORES'=>['Admin/Admin/login', 'Admin/Admin/verify',],
-        'IGNORANCE'=>[
+        'IGNORES'=>['Admin/Admin/login', 'Admin/Admin/verify',],//全局忽略列表
+        'IGNORANCE'=>[//登陆成功忽略列表
             'Admin/Index/index',
             'Admin/Index/main',
             'Admin/Index/top',

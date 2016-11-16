@@ -11,6 +11,9 @@ namespace Admin\Controller;
 
 class BrandController   extends \Think\Controller
 {
+    /**
+     * 品牌列表
+     */
     public function index(){
         $cond    = [];
         $keyword ='';
@@ -26,6 +29,9 @@ class BrandController   extends \Think\Controller
         $this->assign('rows',$data['rows']);
         $this->display();
     }
+    /**
+     * 品牌添加
+     */
     public function add(){
         $brand_model = D('Brand');
         if (IS_POST) {
@@ -40,7 +46,10 @@ class BrandController   extends \Think\Controller
             $this->display();
         }
     }
-    public function remove($id=0){
+    /**
+     * 品牌删除
+     */
+    public function remove($id){
         $brand = D('Brand');
         $rs = $brand->where(['id'=>$id])->setField('status',-1);
         if($rs){

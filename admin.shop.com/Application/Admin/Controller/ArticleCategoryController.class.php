@@ -11,6 +11,9 @@ namespace Admin\Controller;
 
 class ArticleCategoryController extends \Think\Controller
 {
+    /**
+     * 分章分类列表
+     */
     public function index(){
         $article_cate = D('ArticleCategory');
         $data = $article_cate->getPageList();
@@ -18,6 +21,9 @@ class ArticleCategoryController extends \Think\Controller
         $this->assign('rows',$data['rows']);
         $this->display();
     }
+    /**
+     * 分章分类添加
+     */
     public function add(){
         if (IS_POST) {
             $article_cate = D('ArticleCategory');
@@ -32,7 +38,10 @@ class ArticleCategoryController extends \Think\Controller
             $this->display();
         }
     }
-    public function remove($id=0){
+    /**
+     * 分章分类删除
+     */
+    public function remove($id){
         $article_cate = D('ArticleCategory');
         $rs = $article_cate->where(['id'=>$id])->setField('status',-1);
         if($rs){
@@ -41,6 +50,9 @@ class ArticleCategoryController extends \Think\Controller
             $this->error('删除失败');
         }
     }
+    /**
+     * 分章分类编辑
+     */
     public function edit($id){
         $article_cate = D('ArticleCategory');
         if (IS_POST) {

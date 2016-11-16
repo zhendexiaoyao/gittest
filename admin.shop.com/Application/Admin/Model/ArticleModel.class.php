@@ -19,10 +19,12 @@ class ArticleModel extends \Think\Model
         $article_detail = M('article_detail');
         $this->data['inputtime'] = NOW_TIME;
         $article_id = $this->add();
+        //存入本章基本信息
         if ($article_id === false) {
             $this->rollback();
             return false;
         }
+        //存入文章内容
         $data = ['article_id'=>$article_id,'content'=>$content];
         if ($article_detail->add($data) === false) {
             $this->rollback();

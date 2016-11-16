@@ -13,15 +13,24 @@ use Think\Model;
 
 class GoodsModel extends Model
 {
+    //自动验证
     protected $_validate = [
         ['name','require','用户名不能为空'],
         ['logo','require','请上传商品图片'],
     ];
-//    protected $patchValidate    =   true;
+    //开启批量验证
+    protected $patchValidate    =   true;
+    //自动完成
     protected $_auto = [
         ['inputtime','time',3,'function'],
         ['goods_status','array_sum',3,'function'],
     ];
+
+    /**
+     * 获得分页信息
+     * @param array $cond
+     * @return array
+     */
     public function getPageList(array $cond = []){
         $cond = array_merge(['status'=>['neq',-1]],$cond);
         $total = $this->where($cond)->count();
@@ -35,6 +44,12 @@ class GoodsModel extends Model
         $data = ['pageBar'=>$pageBar,'rows'=>$rows];
         return $data;
     }
+
+    /**
+     * 获得编辑时页面需要的信息
+     * @param $id
+     * @return mixed
+     */
     public function requestData($id){
         $row = $this->where(['id'=>$id])->find();
         $goods_status = $row['goods_status'];
@@ -57,9 +72,15 @@ class GoodsModel extends Model
         $row['path'] = json_encode($goods_gallery->field('path')->where(['goods_id'=>$id])->select());
         return $row;
     }
+
+    /**
+     * 自动生成货号
+     * @return string
+     */
     private function getSn(){
         $goods_day_count = M('GoodsDayCount');
         $day = date('Ymd');
+        //获得当天添加的产品数量
         $count = $goods_day_count->getFieldByDay($day,'count');
         if(!$count){
             $count = 1;
@@ -74,6 +95,13 @@ class GoodsModel extends Model
         $cs = substr($cs,-5);
         return 'SN'.$day.$cs;
     }
+
+    /**
+     * 添加产品的方法
+     * @param $path
+     * @param $content
+     * @return bool
+     */
     public function addGoods($path,$content){
         $this->startTrans();
         $goods_detail = M('GoodsDetail');
@@ -84,6 +112,7 @@ class GoodsModel extends Model
             return false;
 
         }
+        //商品详细信息
         $detail = ['goods_id'=>$goods_id,'content'=>$content];
         if ($goods_detail->add($detail) === false) {
             $this->rollback();
@@ -94,10 +123,12 @@ class GoodsModel extends Model
             $gallery[$key]['path'] = $val;
             $gallery[$key]['goods_id'] = $goods_id;
         }
+        //商品相册
         if ($goods_gallery->addAll($gallery) === false) {
             $this->rollback();
             return false;
         }
+        //更改货号
         $sn = $this->getSn();
         if ($this->where(['id'=>$goods_id])->setField('sn',$sn) === false) {
             $this->rollback();
@@ -106,6 +137,13 @@ class GoodsModel extends Model
         $this->commit();
         return true;
     }
+
+    /**
+     * 修改产品信息
+     * @param $path
+     * @param $content
+     * @return bool
+     */
     public function updateGoods($path,$content){
         $this->startTrans();
         $goods_detail = M('GoodsDetail');
@@ -116,6 +154,7 @@ class GoodsModel extends Model
             $this->rollback();
             return false;
         }
+        //商品详细信息
         $detail = ['goods_id'=>$goods_id,'content'=>$content];
         if ($goods_detail->save($detail) === false) {
             $this->rollback();
@@ -126,7 +165,9 @@ class GoodsModel extends Model
             $gallery[$key]['path'] = $val;
             $gallery[$key]['goods_id'] = $goods_id;
         }
+        //删除原来产品对应的相片路径
         $goods_gallery->where(['goods_id'=>$goods_id])->delete();
+        //添加新的相片路径
         if ($goods_gallery->addAll($gallery) === false) {
             $this->rollback();
             return false;

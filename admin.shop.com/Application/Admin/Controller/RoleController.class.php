@@ -17,6 +17,10 @@ class RoleController extends Controller
     protected function _initialize(){
         $this->_model = D('Role');
     }
+
+    /**
+     * 角色列表
+     */
     public function index(){
         $cond    = [];
         $keyword ='';
@@ -31,6 +35,10 @@ class RoleController extends Controller
         $this->assign('rows',$data['rows']);
         $this->display();
     }
+
+    /**
+     * 添加角色
+     */
     public function add(){
         if (IS_POST) {
             if ($this->_model->create()===false) {
@@ -45,6 +53,11 @@ class RoleController extends Controller
             $this->display();
         }
     }
+
+    /**
+     * 编辑角色
+     * @param $id
+     */
     public function edit($id){
         if (IS_POST) {
             if ($this->_model->create()===false) {
@@ -61,12 +74,21 @@ class RoleController extends Controller
             $this->display('add');
         }
     }
+
+    /**
+     * 删除角色
+     * @param $id
+     */
     public function remove($id){
         if ($this->_model->deleteRole($id)===false) {
             $this->error(get_error($this->_model));
         }
         $this->success('删除成功',U('index'));
     }
+
+    /**
+     * 获得前台z-tree需要的权限json信息
+     */
     private function _get_permission(){
         $permission = M('Permission')->order('lft')->select();
         $this->assign('permission',json_encode($permission));

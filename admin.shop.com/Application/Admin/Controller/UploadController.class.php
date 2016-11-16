@@ -56,6 +56,6 @@ class UploadController extends \Think\Controller
                 'url'=>$url
             ];
         }
-        return $this->ajaxReturn($data);
+        return $this->ajaxReturn($data);//为ajax返回数据时，只能echo或者ajaxReturn
     }
 }
