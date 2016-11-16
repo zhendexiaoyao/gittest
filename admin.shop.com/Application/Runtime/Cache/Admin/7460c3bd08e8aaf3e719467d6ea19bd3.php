@@ -19,7 +19,7 @@
     <form action="<?php echo U();?>" name="searchForm">
     <img src="/Public/Images/icon_search.gif" width="26" height="22" border="0" alt="search" />
     <select name="goods_category_id">
-        <option>所有分类</option>
+        <option value="">所有分类</option>
         <?php if(is_array($categories)): foreach($categories as $key=>$val): ?><option value="<?php echo ($val["id"]); ?>"><?php echo str_repeat('&nbsp;',($val['level']-1)*3); echo ($val['name']); ?></option><?php endforeach; endif; ?>
     </select>
     <!-- 品牌 -->

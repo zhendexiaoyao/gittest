@@ -115,6 +115,7 @@ class AdminModel extends Model
         if($admin_info = $this->where($cookie)->where(['token'=>['neq','']])->find()){
             $this->saveToken($admin_info,true);
             session('ADMIN_INFO', $admin_info);
+            $this->savePath();
             return $admin_info;
         }else{
             return [];
@@ -150,5 +151,17 @@ class AdminModel extends Model
         }
         $this->commit();
         return true;
+    }
+    public function savePath(){
+        $admininfo = session('ADMIN_INFO');
+        $id = $admininfo['id'];
+        $path = M('AdminRole')->alias('ar')->field('p.id,path')->join('__ROLE_PERMISSION__ as rp using(`role_id`)')->join('__PERMISSION__ as p ON rp.`permission_id`=p.`id`')->where(['ar.admin_id'=>$id])->select();
+        $pathes = $permission_ids = [];
+        foreach($path as $val){
+            $pathes[] = $val['path'];
+            $permission_ids[] = $val['id'];
+        }
+        session('ADMIN_PATH',$pathes);
+        session('ADMIN_PIDS',$permission_ids);
     }
 }

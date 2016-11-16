@@ -42,11 +42,26 @@ class PermissionModel extends Model
         }
         return $this->save();
     }
+
     public function deletePermission($id){
+        $this->startTrans();
         $db_mysql        = new \Admin\Logic\MysqlOrm();
         $NestedSets = new \Admin\Logic\NestedSets($db_mysql, $this->getTableName(), 'lft', 'rght', 'parent_id', 'id', 'level');
         if ($NestedSets->delete($id) === false) {
             $this->error = '删除失败';
+            $this->rollback();
+            return false;
+        }
+        $rs = M('RolePermission')->where(['permission_id'=>$id])->delete();
+        if ($rs === false) {
+            $this->error = '删除角色权限关联失败';
+            $this->rollback();
+            return false;
+        }
+        $result = M('MenuPermission')->where(['permission_id'=>$id])->delete();
+        if ($result === false) {
+            $this->error = '删除菜单权限关联失败';
+            $this->rollback();
             return false;
         }
         return true;

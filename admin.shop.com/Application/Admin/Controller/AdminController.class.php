@@ -35,8 +35,9 @@ class AdminController extends Controller
             $row['last_login_ip'] = get_client_ip(1);
             $admin_model->save($row);
             session('ADMIN_INFO',$row);
+            $admin_model->savePath();
             $admin_model->saveToken($row,I('post.remember'));
-            $this->success('登录成功！', U('index'));
+            $this->success('登录成功！', U('Admin/Index/index'));
         }else{
             $this->display();
         }
@@ -55,8 +56,8 @@ class AdminController extends Controller
     public function logout()
     {
         cookie(null);
-        session('userinfo',null);
-        $this->success('退出成功',U('login'));
+        session(null);
+        $this->success('退出成功',U('Index/index'));
     }
     public function add(){
         $admin_model = D('Admin');

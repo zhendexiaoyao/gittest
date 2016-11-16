@@ -14,10 +14,7 @@ use Think\Behavior;
 class permissionBehavior extends Behavior
 {
     public function run(&$param) {
-        $ignores = [
-            'Admin/Admin/login',
-            'Admin/Admin/verify',
-        ];
+        $ignores = C('RBAC.IGNORES');
         $url     = MODULE_NAME . '/' . CONTROLLER_NAME . '/' . ACTION_NAME;
         if (in_array($url, $ignores)) {
             return true;
@@ -29,6 +26,19 @@ class permissionBehavior extends Behavior
                 redirect($url);
             }
         }
-        return true;
+        if ($admininfo['username'] === 'admin') {
+            return true;
+        }
+        $ignorance = C('RBAC.IGNORANCE');
+        if (in_array($url, $ignorance)) {
+            return true;
+        }
+        if (in_array($url,session('ADMIN_PATH'))) {
+            return true;
+        }else{
+            echo "<script type='text/javascript'>alert('没有权限');history.back();</script>";
+            exit;
+        }
+
     }
 }

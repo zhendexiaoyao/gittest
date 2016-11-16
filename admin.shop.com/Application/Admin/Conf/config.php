@@ -23,5 +23,17 @@ return array(
     'PAGE_MODE' =>[
         'SIZE'=>2,
         'THEME'=>'%FIRST% %UP_PAGE% %LINK_PAGE% %DOWN_PAGE% %END% %HEADER%',
-    ]
+    ],
+    'RBAC'=>[
+        'IGNORES'=>['Admin/Admin/login', 'Admin/Admin/verify',],
+        'IGNORANCE'=>[
+            'Admin/Index/index',
+            'Admin/Index/main',
+            'Admin/Index/top',
+            'Admin/Index/menu',
+            'Admin/Upload/upload',
+            'Admin/Admin/logout'
+        ],
+    ],
+    'COOKIE_PREFIX'         =>  'admin_shop_com_',      // Cookie前缀 避免冲突
 );
