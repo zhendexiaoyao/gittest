@@ -9,10 +9,12 @@
 namespace Admin\Model;
 
 
+use Think\Verify;
+
 class ArticleModel extends \Think\Model
 {
     public $_validate = [
-        ['name','require','文章名称不能为空']
+        ['name','require','文章名称不能为空'],
     ];
     public function addArticle($content){
         $this->startTrans();

@@ -1,0 +1,113 @@
+<extend name="Layout:member_base"/>
+<block name="css">
+	<style type="text/css">
+		.error-msg{
+			color:red;
+			margin-left: 8px;
+		}
+	</style>
+</block>
+	<!-- 登录主体部分start -->
+<block name="main">
+	<div class="login w990 bc mt10">
+		<div class="login_hd">
+			<h2>用户登录</h2>
+			<b></b>
+		</div>
+		<div class="login_bd">
+			<div class="login_form fl">
+				<form action="" method="post" id="login">
+					<ul>
+						<li>
+							<label for="">用户名：</label>
+							<input type="text" class="txt" name="username" /><span class="error-msg"></span>
+						</li>
+						<li>
+							<label for="">密码：</label>
+							<input type="password" class="txt" name="password" /><span class="error-msg"></span>
+							<a href="">忘记密码?</a>
+						</li>
+						<li class="checkcode">
+							<label for="">验证码：</label>
+							<input type="text"  name="checkcode" />
+							<img id="checkcode" src="{:U('Captcha/show',['nocache'=>NOW_TIME])}" title="点击换图" alt="点击换图" onclick='changeCaptcha(this)'/><span class="error-msg"></span>
+						</li>
+						<li>
+							<label for="">&nbsp;</label>
+							<input type="checkbox" class="chb" name="remember" /> 保存登录信息
+						</li>
+						<li>
+							<label for="">&nbsp;</label>
+							<input type="submit" value="" class="login_btn" />
+						</li>
+					</ul>
+				</form>
+
+				<div class="coagent mt15">
+					<dl>
+						<dt>使用合作网站登录商城：</dt>
+						<dd class="qq"><a href=""><span></span>QQ</a></dd>
+						<dd class="weibo"><a href=""><span></span>新浪微博</a></dd>
+						<dd class="yi"><a href=""><span></span>网易</a></dd>
+						<dd class="renren"><a href=""><span></span>人人</a></dd>
+						<dd class="qihu"><a href=""><span></span>奇虎360</a></dd>
+						<dd class=""><a href=""><span></span>百度</a></dd>
+						<dd class="douban"><a href=""><span></span>豆瓣</a></dd>
+					</dl>
+				</div>
+			</div>
+
+			<div class="guide fl">
+				<h3>还不是商城用户</h3>
+				<p>现在免费注册成为商城用户，便能立刻享受便宜又放心的购物乐趣，心动不如行动，赶紧加入吧!</p>
+
+				<a href="regist.html" class="reg_btn">免费注册 >></a>
+			</div>
+
+		</div>
+	</div>
+	<!-- 登录主体部分end -->
+</block>
+<block name="js">
+	<script type="text/javascript" src="__VALIDATE__/jquery.validate.min.js"></script>
+	<script type="text/javascript">
+		function changeCaptcha(ele){
+			var url = '{:U("Captcha/show")}?nocache' + new Date().getTime();
+			ele.src = url;
+		}
+		$('#login').validate({
+			rules: {
+				username: {
+					required: true,
+					rangelength: [3, 20],
+				},
+				password: {
+					required: true,
+					rangelength: [6, 20],
+				},
+				checkcode: "required",
+			},
+			messages: {
+				username: {
+					required: "用户名必填",
+					rangelength: "用户名长度应是3-20位",
+				},
+				password: {
+					required: "密码必填",
+					rangelength: "密码长度应是6-20位",
+				},
+				checkcode: "图片验证码不能为空",
+			},
+			errorPlacement: function(error, ele) {
+				//获取错误信息,错误信息放在error中的innerHTML
+				var msg = error[0].innerHTML;
+				//找到错误控件后面的节点
+				var node = $(ele).siblings('.error-msg');
+				node.html(msg)
+			},
+			success: function() {
+			},
+		});
+	</script>
+</block>
+
