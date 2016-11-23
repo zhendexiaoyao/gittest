@@ -6,7 +6,7 @@
  * Time: 8:54
  */
 return [
-    'action_begin' => [
-        '\Common\Behaviors\permissionBehavior',
-    ],
+//    'action_begin' => [
+//        '\Common\Behaviors\permissionBehavior',
+//    ],
 ];

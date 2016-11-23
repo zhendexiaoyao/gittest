@@ -24,15 +24,15 @@ class UploadController extends \Think\Controller
             'saveExt'      => '', //文件保存后缀，空则使用原后缀
             'replace'      => false, //存在同名是否覆盖
             'hash'         => false, //是否生成hash编码
-            'callback'     => false //检测文件是否存在回调，如果存在返回文件信息数组
-//            'driver'       => 'Qiniu', // 文件上传驱动
-//            'driverConfig' => array(
-//                'secretKey' => 'TOtC_HL-nYTPDOipyc7ITV3oJNpeCArjRJ1YOdnG', //七牛服务器
-//                'accessKey' => 'C2yWnx3pb3lHaa2DpDG3wvwgoLoT1068rkrALQhg', //七牛用户
-//                'domain'    => 'og9n3lf9v.bkt.clouddn.com/', //域名
-//                'bucket'    => 'tpmall', //空间名称
-//                'timeout'   => 30, //超时时间
-//            ), // 上传驱动配置
+            'callback'     => false, //检测文件是否存在回调，如果存在返回文件信息数组
+            'driver'       => 'Qiniu', // 文件上传驱动
+            'driverConfig' => array(
+                'secretKey' => 'TOtC_HL-nYTPDOipyc7ITV3oJNpeCArjRJ1YOdnG', //七牛服务器
+                'accessKey' => 'C2yWnx3pb3lHaa2DpDG3wvwgoLoT1068rkrALQhg', //七牛用户
+                'domain'    => 'og9n3lf9v.bkt.clouddn.com/', //域名
+                'bucket'    => 'tpmall', //空间名称
+                'timeout'   => 30, //超时时间
+            ), // 上传驱动配置
         ];
         $upload = new \Think\Upload($config);
         $file = $upload->upload();

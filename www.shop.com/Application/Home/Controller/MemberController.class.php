@@ -41,12 +41,22 @@ class MemberController extends Controller
             if ($this->_model->checkLogin() === false) {
                 $this->error(get_error($this->_model));
             }
-            $this->success('登录成功', U('Index/index'));
+            $url = cookie('referer');
+            cookie('referer',null);
+            if(empty($url)){
+                $url = U('Index/index');
+            }
+            $this->success('登录成功',$url );
         }else{
             $this->assign('metaTitle','用户登录');
             $this->display();
         }
 
+    }
+    public function logout(){
+        session(null);
+        cookie(null);
+        $this->success('退出成功',U('login'));
     }
     public function sms($tel){
         if (IS_AJAX) {
@@ -56,7 +66,6 @@ class MemberController extends Controller
             if($redis->exists($tel)){
                 $times = $redis->get($tel);
                 if($times>5){
-                    echo 'failure';
                     $this->ajaxReturn(false);
                 }else{
                     dump($times);

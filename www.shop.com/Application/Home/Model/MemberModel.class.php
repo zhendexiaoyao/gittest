@@ -70,6 +70,10 @@ class MemberModel extends Model
             $this->error = '用户名或密码不匹配';
             return false;
         }
+        if ($user_info['status']==0) {
+            $this->error = '你已被管理员禁止登陆';
+            return false;
+        }
         $salt     = $user_info['salt'];
         $password = md5(md5($password).md5($salt));
 
